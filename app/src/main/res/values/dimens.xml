@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="padding">16dp</dimen>
+    <dimen name="padding_drawable">10dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+</resources>

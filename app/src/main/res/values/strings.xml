@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Book Library</string>
+
+    <string name="short_year_pattern">%d г.</string>
+    <string name="short_pages_pattern">%d стр.</string>
+    <string name="delete">удалить</string>
+    <string name="book_was_deleted">Книга успешно удалена</string>
+</resources>
