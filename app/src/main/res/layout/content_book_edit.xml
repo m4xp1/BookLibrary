@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_below_fab"
+    android:paddingBottom="@dimen/padding"
+    android:paddingEnd="@dimen/padding"
+    android:paddingStart="@dimen/padding"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="one.xcorp.booklibrary.ui.screen.book.BookEditActivity"
+    tools:showIn="@layout/activity_book_edit">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/author"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/textSecondary"
+            app:errorTextAppearance="@style/TextInputLayout.Error"
+            app:hintTextAppearance="@style/TextInputLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/authorEdt"
+                style="@style/PrimaryText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/author_label"
+                android:imeOptions="actionNext"
+                android:inputType="textCapSentences"
+                android:maxLines="1"
+                android:nextFocusDown="@+id/name"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_lines"
+            android:textColorHint="@color/textSecondary"
+            app:errorTextAppearance="@style/TextInputLayout.Error"
+            app:hintTextAppearance="@style/TextInputLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/author">
+
+            <EditText
+                android:id="@+id/nameEdt"
+                style="@style/PrimaryText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name_label"
+                android:imeOptions="actionNext"
+                android:inputType="textCapSentences"
+                android:maxLines="1"
+                android:nextFocusDown="@+id/year"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/year"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_lines"
+            android:textColorHint="@color/textSecondary"
+            app:errorTextAppearance="@style/TextInputLayout.Error"
+            app:hintTextAppearance="@style/TextInputLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name">
+
+            <EditText
+                android:id="@+id/yearEdt"
+                style="@style/PrimaryText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/year_label"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:maxLength="4"
+                android:nextFocusDown="@+id/pages"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/pages"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_lines"
+            android:textColorHint="@color/textSecondary"
+            app:errorTextAppearance="@style/TextInputLayout.Error"
+            app:hintTextAppearance="@style/TextInputLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/year">
+
+            <EditText
+                android:id="@+id/pagesEdt"
+                style="@style/PrimaryText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/pages_label"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:maxLength="4"
+                android:nextFocusDown="@+id/excerpt"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/excerpt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_lines"
+            android:textColorHint="@color/textSecondary"
+            app:errorTextAppearance="@style/TextInputLayout.Error"
+            app:hintTextAppearance="@style/TextInputLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pages">
+
+            <EditText
+                android:id="@+id/excerptEdt"
+                style="@style/PrimaryText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:hint="@string/excerpt_label"
+                android:imeOptions="actionDone"
+                android:inputType="textMultiLine"/>
+        </android.support.design.widget.TextInputLayout>
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.NestedScrollView>

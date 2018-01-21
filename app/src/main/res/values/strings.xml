@@ -7,4 +7,16 @@
     <string name="book_was_deleted">Книга успешно удалена</string>
 
     <string name="action_edit">Редактировать</string>
+    <string name="action_done">Завершить</string>
+
+    <string name="title_adding">Новая книга</string>
+    <string name="title_editing">Редактирование</string>
+    <string name="dialog_choose_illustration_title">Выбор иллюстрации</string>
+    <string name="dialog_choose_illustration_message">Укажите url адрес изображения</string>
+    <string name="author_label">Автор</string>
+    <string name="name_label">Название</string>
+    <string name="year_label">Год издания</string>
+    <string name="pages_label">Колличество страниц</string>
+    <string name="excerpt_label">Отрывок</string>
+    <string name="empty_value">Значение не может быть пустым</string>
 </resources>

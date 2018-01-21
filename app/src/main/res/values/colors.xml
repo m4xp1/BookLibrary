@@ -3,7 +3,8 @@
     <color name="colorPrimary">#8d6e63</color>
     <color name="colorPrimaryDark">#5f4339</color>
     <color name="colorAccent">#ffab40</color>
+    <color name="colorError">#ff6054</color>
     <color name="textPrimary">#dd000000</color>
     <color name="textSecondary">#89000000</color>
-    <color name="list_delete_background">#fa5a7b</color>
+    <color name="listDeleteBackground">#fa5a7b</color>
 </resources>

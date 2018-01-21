@@ -1,6 +1,5 @@
 package one.xcorp.booklibrary.ui.screen.main;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -19,9 +18,9 @@ import butterknife.OnClick;
 import one.xcorp.booklibrary.R;
 import one.xcorp.booklibrary.core.data.IDataProvider;
 import one.xcorp.booklibrary.core.data.book.Book;
-import one.xcorp.booklibrary.core.data.book.BookMemoryProvider;
+import one.xcorp.booklibrary.core.data.book.BookProviderFactory;
 import one.xcorp.booklibrary.ui.screen.Activity;
-import one.xcorp.booklibrary.ui.screen.book.BookDetailsActivity;
+import one.xcorp.booklibrary.ui.screen.book.BookEditActivity;
 import one.xcorp.booklibrary.ui.widget.RecyclerTouchHelper;
 
 public class MainActivity extends Activity {
@@ -39,7 +38,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        provider = new BookMemoryProvider();
+        provider = BookProviderFactory.getDefault();
 
         configureRecycler();
     }
@@ -59,7 +58,7 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.fab)
     public void onAddClick(View view) {
-        startActivity(new Intent(this, BookDetailsActivity.class));
+        startActivity(BookEditActivity.launch(this));
     }
 
     private final RecyclerTouchHelper callbackTouchHelper =
