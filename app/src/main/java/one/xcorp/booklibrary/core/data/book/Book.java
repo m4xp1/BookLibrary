@@ -2,7 +2,7 @@ package one.xcorp.booklibrary.core.data.book;
 
 import android.support.annotation.NonNull;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Book {
 
     private @NonNull String author;
