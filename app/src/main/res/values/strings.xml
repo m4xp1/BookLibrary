@@ -5,4 +5,6 @@
     <string name="short_pages_pattern">%d стр.</string>
     <string name="delete">удалить</string>
     <string name="book_was_deleted">Книга успешно удалена</string>
+
+    <string name="action_edit">Редактировать</string>
 </resources>

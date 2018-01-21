@@ -1,5 +1,6 @@
 package one.xcorp.booklibrary.ui.screen.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -20,6 +21,7 @@ import one.xcorp.booklibrary.core.data.IDataProvider;
 import one.xcorp.booklibrary.core.data.book.Book;
 import one.xcorp.booklibrary.core.data.book.BookMemoryProvider;
 import one.xcorp.booklibrary.ui.screen.Activity;
+import one.xcorp.booklibrary.ui.screen.book.BookDetailsActivity;
 import one.xcorp.booklibrary.ui.widget.RecyclerTouchHelper;
 
 public class MainActivity extends Activity {
@@ -57,7 +59,7 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.fab)
     public void onAddClick(View view) {
-
+        startActivity(new Intent(this, BookDetailsActivity.class));
     }
 
     private final RecyclerTouchHelper callbackTouchHelper =
