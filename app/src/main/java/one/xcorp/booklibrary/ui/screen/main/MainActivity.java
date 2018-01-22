@@ -11,7 +11,7 @@ import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
-import java.util.ArrayList;
+import com.annimon.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -38,9 +38,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        provider = BookProviderFactory.getDefault();
-
         configureRecycler();
+
+        provider = BookProviderFactory.getDefault();
+        adapter.setItems(Stream.of(provider.list())
+                .sortBy(Book::getAuthor)
+                .toList());
     }
 
     private void configureRecycler() {
@@ -50,10 +53,16 @@ public class MainActivity extends Activity {
         ItemTouchHelper touchHelper = new ItemTouchHelper(callbackTouchHelper);
         touchHelper.attachToRecyclerView(recycler);
 
-        adapter = new BookAdapter(this, new ArrayList<>(provider.list()));
+        adapter = new BookAdapter(this);
+        adapter.setOnClickListener(this::onItemClick);
         recycler.setAdapter(adapter);
 
         recycler.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    @SuppressWarnings("unused")
+    private void onItemClick(Book book, int position) {
+        startActivity(BookEditActivity.launch(this, book));
     }
 
     @OnClick(R.id.fab)
@@ -70,11 +79,15 @@ public class MainActivity extends Activity {
                 @Override public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                     int deletedIndex = viewHolder.getAdapterPosition();
                     Book deletedItem = adapter.removeItem(deletedIndex);
+                    provider.delete(deletedItem);
 
                     Snackbar snackbar = Snackbar
                             .make(coordinator, R.string.book_was_deleted, Snackbar.LENGTH_LONG);
                     snackbar.setAction(android.R.string.cancel,
-                            view -> adapter.restoreItem(deletedItem, deletedIndex));
+                            view -> {
+                                adapter.restoreItem(deletedItem, deletedIndex);
+                                provider.add(deletedItem);
+                            });
                     snackbar.show();
                 }
             };

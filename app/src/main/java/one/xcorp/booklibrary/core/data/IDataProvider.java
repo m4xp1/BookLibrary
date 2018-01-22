@@ -8,7 +8,7 @@ public interface IDataProvider<T> {
 
     void add(T item);
 
-    void remove(T item);
+    void delete(T item);
 
     void update(T item);
 }

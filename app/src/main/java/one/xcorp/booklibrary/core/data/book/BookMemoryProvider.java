@@ -4,7 +4,7 @@ package one.xcorp.booklibrary.core.data.book;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +21,7 @@ public class BookMemoryProvider implements IDataProvider<Book> {
         return instance;
     }
 
-    private final Set<Book> books = new LinkedHashSet<>();
+    private final Set<Book> books = new HashSet<>();
 
     private BookMemoryProvider() {
         books.add(new Book(
@@ -76,13 +76,13 @@ public class BookMemoryProvider implements IDataProvider<Book> {
         books.add(item);
     }
 
-    @Override public void remove(@NonNull Book item) {
+    @Override public void delete(@NonNull Book item) {
         books.remove(item);
     }
 
     @Override public void update(@NonNull Book item) {
         if (books.contains(item)) {
-            remove(item);
+            delete(item);
             add(item);
         }
     }
