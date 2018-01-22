@@ -84,6 +84,7 @@ public class InputDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         int padding = (int) (20 * Resources.getSystem().getDisplayMetrics().density);
 
+        //noinspection ConstantConditions
         FrameLayout frameLayout = new FrameLayout(getActivity());
         frameLayout.setPadding(padding, 0, padding, 0);
 
