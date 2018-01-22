@@ -1,14 +1,17 @@
 package one.xcorp.booklibrary.core.data;
 
-import java.util.Collection;
+import java.util.List;
+
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
 public interface IDataProvider<T> {
 
-    Collection<? extends T> list();
+    Single<List<T>> list();
 
-    void add(T item);
+    Completable add(T item);
 
-    void delete(T item);
+    Completable delete(T item);
 
-    void update(T item);
+    Completable update(T item);
 }

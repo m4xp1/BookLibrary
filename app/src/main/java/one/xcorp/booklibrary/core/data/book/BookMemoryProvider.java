@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
 import one.xcorp.booklibrary.core.data.IDataProvider;
 
 public class BookMemoryProvider implements IDataProvider<Book> {
@@ -68,22 +70,30 @@ public class BookMemoryProvider implements IDataProvider<Book> {
                 .setExcerpt("Во-первых, эта книга излагает системный подход к определению жизненных целей, приоритетов человека. Эти цели у всех разные, но книга помогает понять себя и четко сформулировать жизненные цели. Во-вторых, книга показывает, как достигать этих целей. И в-третьих, книга показывает, как каждый человек может стать лучше. Причем речь идет не об изменении имиджа, а о настоящих изменениях, самосовершенствовании. Книга не дает простых решений и не обещает мгновенных чудес. Любые позитивные изменения требуют времени, работы и упорства. Но для людей, стремящихся максимально реализовать потенциал, заложенный в них природой, эта книга - дорожная карта."));
     }
 
-    @Override public @NonNull List<Book> list() {
-        return new ArrayList<>(books);
+    @Override
+    public @NonNull Single<List<Book>> list() {
+        return Single.just(new ArrayList<>(books));
     }
 
-    @Override public void add(@NonNull Book item) {
-        books.add(item);
+    @Override
+    public Completable add(@NonNull Book book) {
+        return Completable.fromAction(() -> books.add(book));
     }
 
-    @Override public void delete(@NonNull Book item) {
-        books.remove(item);
+    @Override
+    public Completable delete(@NonNull Book book) {
+        return Completable.fromAction(() -> books.remove(book));
     }
 
-    @Override public void update(@NonNull Book item) {
-        if (books.contains(item)) {
-            delete(item);
-            add(item);
-        }
+    @Override
+    public Completable update(@NonNull Book book) {
+        return Completable.fromAction(() -> {
+            if (!books.contains(book)) {
+                throw new IllegalStateException("Book does not exist.");
+            }
+
+            books.remove(book);
+            books.add(book);
+        });
     }
 }

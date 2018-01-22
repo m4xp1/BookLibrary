@@ -20,6 +20,10 @@ import com.bumptech.glide.request.target.Target;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import one.xcorp.booklibrary.R;
 import one.xcorp.booklibrary.core.data.IDataProvider;
 import one.xcorp.booklibrary.core.data.book.Book;
@@ -33,6 +37,9 @@ import static one.xcorp.booklibrary.core.Utils.validString;
 public class BookEditActivity extends Activity {
 
     public static final String EXTRA_BOOK = "book";
+
+    public static final int RESULT_ADD = 10;
+    public static final int RESULT_UPDATE = 11;
 
     public static Intent launch(@NonNull Context context) {
         return new Intent(context, BookEditActivity.class);
@@ -62,6 +69,7 @@ public class BookEditActivity extends Activity {
     private Book book;
 
     private Values values = new Values();
+    private CompositeDisposable disposables = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +167,7 @@ public class BookEditActivity extends Activity {
                     .setIllustration(values.illustration)
                     .setExcerpt(values.excerpt);
 
-            provider.add(book);
+            complete(provider.add(book), book, RESULT_ADD);
         } else {
             book.setIllustration(values.illustration);
             book.setAuthor(values.author);
@@ -168,10 +176,20 @@ public class BookEditActivity extends Activity {
             book.setPages(values.pages);
             book.setExcerpt(values.excerpt);
 
-            provider.update(book);
+            complete(provider.update(book), book, RESULT_UPDATE);
         }
+    }
 
-        finish();
+    private void complete(Completable completable, Book book, int resultCode) {
+        disposables.add(completable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    Intent data = new Intent();
+                    data.putExtra(EXTRA_BOOK, book);
+                    setResult(resultCode, data);
+                    finish();
+                }, throwable -> showToast(R.string.request_failed)));
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -215,6 +233,12 @@ public class BookEditActivity extends Activity {
     private void hideErrorTextInput(TextInputLayout textInput) {
         textInput.setErrorEnabled(false);
         textInput.setError("");
+    }
+
+    @Override
+    protected void onDestroy() {
+        disposables.dispose();
+        super.onDestroy();
     }
 
     private final RequestListener<Drawable> imageRequestListener = new RequestListener<Drawable>() {
