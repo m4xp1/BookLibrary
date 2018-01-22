@@ -7,8 +7,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.annimon.stream.function.BiConsumer;
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import butterknife.BindView;
@@ -22,24 +28,50 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     private final String yearPattern;
     private final String pagesPattern;
 
-    private final List<Book> items;
+    private final List<Book> items = new ArrayList<>();
 
-    public BookAdapter(@NonNull Context context, @NonNull List<Book> items) {
+    private BiConsumer<Book, Integer> clickListener;
+
+    public BookAdapter(@NonNull Context context) {
         this.yearPattern = context.getString(R.string.short_year_pattern);
         this.pagesPattern = context.getString(R.string.short_pages_pattern);
+    }
 
-        this.items = items;
+    public void setItems(Collection<? extends Book> books) {
+        items.clear();
+        items.addAll(books);
+
+        notifyDataSetChanged();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext())
+        ViewHolder viewHolder = new ViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_book, parent, false));
+
+        viewHolder.itemView.setOnClickListener(view -> {
+            if (clickListener != null) {
+                int position = viewHolder.getAdapterPosition();
+                clickListener.accept(items.get(position), position);
+            }
+        });
+
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Book item = items.get(position);
+
+        if (item.getIllustration() != null) {
+            Glide.with(holder.itemView.getContext())
+                    .load(item.getIllustration())
+                    .into(holder.illustration);
+        } else {
+            Glide.with(holder.itemView.getContext())
+                    .clear(holder.illustration);
+            holder.illustration.setImageDrawable(null);
+        }
 
         holder.author.setText(item.getAuthor());
         holder.year.setText(String.format(yearPattern, item.getYear()));
@@ -64,8 +96,14 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         notifyItemInserted(position);
     }
 
+    public void setOnClickListener(BiConsumer<Book, Integer> listener) {
+        clickListener = listener;
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.illustration)
+        ImageView illustration;
         @BindView(R.id.foreground)
         View foreground;
         @BindView(R.id.author)
