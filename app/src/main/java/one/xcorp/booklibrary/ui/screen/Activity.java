@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,13 +14,27 @@ import butterknife.ButterKnife;
 @SuppressWarnings({"unused", "SameParameterValue"})
 public abstract class Activity extends AppCompatActivity {
 
+    private static final int PERCENTAGE_TO_SHOW_TITLE = 79;
+
+    private @Nullable AppBarLayout appBarLayout;
+    private @Nullable CollapsingToolbarLayout collapsingToolbarLayout;
     private @Nullable Toolbar toolbar;
+
+    private int maxScrollSize;
+    private boolean isShowTitle;
+    private CharSequence title;
+
+    private AppBarLayout.OnOffsetChangedListener onOffsetChangedListener;
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
         ButterKnife.bind(this);
 
+        appBarLayout = findViewById(getResources()
+                .getIdentifier("app_bar", "id", getPackageName()));
+        collapsingToolbarLayout = findViewById(getResources()
+                .getIdentifier("toolbar_layout", "id", getPackageName()));
         toolbar = findViewById(getResources()
                 .getIdentifier("toolbar", "id", getPackageName()));
 
@@ -31,6 +46,7 @@ public abstract class Activity extends AppCompatActivity {
     @Override
     public void setTitle(int resId) {
         super.setTitle(resId);
+        this.title = getString(resId);
         if (toolbar != null) {
             toolbar.setTitle(resId);
         }
@@ -39,9 +55,18 @@ public abstract class Activity extends AppCompatActivity {
     @Override
     public void setTitle(CharSequence title) {
         super.setTitle(title);
+        this.title = title;
         if (toolbar != null) {
             toolbar.setTitle(title);
         }
+    }
+
+    public @Nullable AppBarLayout getAppBarLayout() {
+        return appBarLayout;
+    }
+
+    public @Nullable CollapsingToolbarLayout getCollapsingToolbarLayout() {
+        return collapsingToolbarLayout;
     }
 
     public @Nullable Toolbar getToolbar() {
@@ -49,15 +74,12 @@ public abstract class Activity extends AppCompatActivity {
     }
 
     protected void setAppBarScrolled(boolean scrolled) {
-        AppBarLayout appBar = findViewById(getResources()
-                .getIdentifier("app_bar", "id", getPackageName()));
-
-        if (appBar == null) {
+        if (appBarLayout == null) {
             return;
         }
 
         CoordinatorLayout.LayoutParams params =
-                (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+                (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
 
         if (behavior == null) {
@@ -69,5 +91,43 @@ public abstract class Activity extends AppCompatActivity {
                 return scrolled;
             }
         });
+    }
+
+    protected void showExpandedTitle() {
+        if (appBarLayout == null || collapsingToolbarLayout == null || toolbar == null) {
+            return;
+        }
+
+        collapsingToolbarLayout.setTitle(title);
+        appBarLayout.removeOnOffsetChangedListener(onOffsetChangedListener);
+        isShowTitle = false;
+    }
+
+    protected void hideExpandedTitle() {
+        if (appBarLayout == null || collapsingToolbarLayout == null || toolbar == null) {
+            return;
+        }
+
+        title = collapsingToolbarLayout.getTitle();
+
+        toolbar.setTitle("");
+        collapsingToolbarLayout.setTitle("");
+
+        appBarLayout.addOnOffsetChangedListener(
+                onOffsetChangedListener = (appBarLayout, verticalOffset) -> {
+                    if (maxScrollSize == 0) {
+                        maxScrollSize = appBarLayout.getTotalScrollRange();
+                    }
+
+                    int percentage = (Math.abs(verticalOffset)) * 100 / maxScrollSize;
+
+                    if (percentage > PERCENTAGE_TO_SHOW_TITLE && !isShowTitle) {
+                        collapsingToolbarLayout.setTitle(title);
+                        isShowTitle = true;
+                    } else if (percentage < PERCENTAGE_TO_SHOW_TITLE && isShowTitle) {
+                        collapsingToolbarLayout.setTitle("");
+                        isShowTitle = false;
+                    }
+                });
     }
 }
