@@ -25,11 +25,8 @@
         </activity>
 
         <activity
-            android:name=".ui.screen.book.BookDetailsActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity
             android:name=".ui.screen.book.BookEditActivity"
+            android:label="@string/title_adding"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"/>
     </application>
