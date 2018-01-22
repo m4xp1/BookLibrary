@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 import one.xcorp.booklibrary.R;
 import one.xcorp.booklibrary.core.data.book.Book;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused", "UnusedReturnValue"})
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     private final String yearPattern;
@@ -37,10 +37,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         this.pagesPattern = context.getString(R.string.short_pages_pattern);
     }
 
-    public void setItems(Collection<? extends Book> books) {
+    public @NonNull List<Book> getItems() {
+        return items;
+    }
+
+    public void setItems(@NonNull Collection<? extends Book> books) {
         items.clear();
         items.addAll(books);
-
         notifyDataSetChanged();
     }
 
@@ -84,19 +87,42 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         return items.size();
     }
 
+    public @NonNull Book getItem(int position) {
+        return items.get(position);
+    }
+
+    public int getPosition(@NonNull Book book) {
+        return items.indexOf(book);
+    }
+
     public @Nullable Book removeItem(int position) {
         Book item = items.remove(position);
         notifyItemRemoved(position);
-
         return item;
     }
 
-    public void restoreItem(Book item, int position) {
-        items.add(position, item);
-        notifyItemInserted(position);
+    public int removeItem(Book book) {
+        int position = getPosition(book);
+        if (position != -1) {
+            removeItem(position);
+        }
+        return position;
     }
 
-    public void setOnClickListener(BiConsumer<Book, Integer> listener) {
+    public void replaceItem(Book book) {
+        int position = getPosition(book);
+        items.set(position, book);
+        notifyItemChanged(position);
+    }
+
+    public void insertItem(Book book, int position) {
+        if (!items.contains(book)) {
+            items.add(position, book);
+            notifyItemInserted(position);
+        }
+    }
+
+    public void setOnClickListener(@Nullable BiConsumer<Book, Integer> listener) {
         clickListener = listener;
     }
 
