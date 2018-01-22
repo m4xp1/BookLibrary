@@ -2,14 +2,20 @@ package one.xcorp.booklibrary.ui.screen.book;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -20,6 +26,9 @@ import one.xcorp.booklibrary.core.data.book.Book;
 import one.xcorp.booklibrary.core.data.book.BookProviderFactory;
 import one.xcorp.booklibrary.ui.dialog.InputDialog;
 import one.xcorp.booklibrary.ui.screen.Activity;
+
+import static one.xcorp.booklibrary.core.Utils.castToInt;
+import static one.xcorp.booklibrary.core.Utils.validString;
 
 public class BookEditActivity extends Activity {
 
@@ -49,35 +58,28 @@ public class BookEditActivity extends Activity {
     @BindView(R.id.excerpt)
     TextInputLayout excerpt;
 
-    private String illustrationValue;
-    private String authorValue;
-    private String nameValue;
-    private Integer yearValue;
-    private Integer pagesValue;
-    private String excerptValue;
-
     private IDataProvider<Book> provider;
     private Book book;
+
+    private Values values = new Values();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_edit);
 
-        setTitle(R.string.title_adding);
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setAppBarScrolled(false);
+        bindDialogListeners();
 
         provider = BookProviderFactory.getDefault();
 
         book = (Book) getIntent().getSerializableExtra(EXTRA_BOOK);
         if (book != null) {
-            setTitle(R.string.title_editing);
+            setTitle(book.getAuthor());
             setInitValues();
         }
-
-        bindDialogListeners();
     }
 
     private void bindDialogListeners() {
@@ -123,6 +125,7 @@ public class BookEditActivity extends Activity {
     private void loadImage(@NonNull String url) {
         Glide.with(illustration.getContext())
                 .load(url)
+                .listener(imageRequestListener)
                 .into(illustration);
         illustration.setContentDescription(url);
     }
@@ -152,18 +155,18 @@ public class BookEditActivity extends Activity {
         }
 
         if (book == null) {
-            book = new Book(authorValue, nameValue, yearValue, pagesValue)
-                    .setIllustration(illustrationValue)
-                    .setExcerpt(excerptValue);
+            book = new Book(values.author, values.name, values.year, values.pages)
+                    .setIllustration(values.illustration)
+                    .setExcerpt(values.excerpt);
 
             provider.add(book);
         } else {
-            book.setIllustration(illustrationValue);
-            book.setAuthor(authorValue);
-            book.setName(nameValue);
-            book.setYear(yearValue);
-            book.setPages(pagesValue);
-            book.setExcerpt(excerptValue);
+            book.setIllustration(values.illustration);
+            book.setAuthor(values.author);
+            book.setName(values.name);
+            book.setYear(values.year);
+            book.setPages(values.pages);
+            book.setExcerpt(values.excerpt);
 
             provider.update(book);
         }
@@ -175,31 +178,31 @@ public class BookEditActivity extends Activity {
     private boolean validate() {
         boolean isValid = true;
 
-        illustrationValue = validString(
+        values.illustration = validString(
                 illustration.getContentDescription().toString(), null);
 
-        authorValue = author.getEditText().getText().toString();
-        if (authorValue.isEmpty()) {
+        values.author = author.getEditText().getText().toString();
+        if (values.author.isEmpty()) {
             showErrorTextInput(author, R.string.empty_value);
             isValid = false;
         }
-        nameValue = name.getEditText().getText().toString();
-        if (nameValue.isEmpty()) {
+        values.name = name.getEditText().getText().toString();
+        if (values.name.isEmpty()) {
             showErrorTextInput(name, R.string.empty_value);
             isValid = false;
         }
-        yearValue = castToInt(year.getEditText().getText().toString());
-        if (yearValue == null) {
+        values.year = castToInt(year.getEditText().getText().toString());
+        if (values.year == null) {
             showErrorTextInput(year, R.string.empty_value);
             isValid = false;
         }
-        pagesValue = castToInt(pages.getEditText().getText().toString());
-        if (pagesValue == null) {
+        values.pages = castToInt(pages.getEditText().getText().toString());
+        if (values.pages == null) {
             showErrorTextInput(pages, R.string.empty_value);
             isValid = false;
         }
 
-        excerptValue = validString(excerpt.getEditText().getText().toString(), null);
+        values.excerpt = validString(excerpt.getEditText().getText().toString(), null);
 
         return isValid;
     }
@@ -214,16 +217,31 @@ public class BookEditActivity extends Activity {
         textInput.setError("");
     }
 
-    @SuppressWarnings("SameParameterValue")
-    private String validString(String value, String defaultValue) {
-        return value == null || value.isEmpty() ? defaultValue : value;
-    }
-
-    private Integer castToInt(String value) {
-        try {
-            return Integer.valueOf(value);
-        } catch (NumberFormatException e) {
-            return null;
+    private final RequestListener<Drawable> imageRequestListener = new RequestListener<Drawable>() {
+        @Override public boolean onLoadFailed(@Nullable GlideException e,
+                                              Object model,
+                                              Target<Drawable> target,
+                                              boolean isFirstResource) {
+            showExpandedTitle();
+            return false;
         }
+
+        @Override public boolean onResourceReady(Drawable resource,
+                                                 Object model,
+                                                 Target<Drawable> target,
+                                                 DataSource dataSource,
+                                                 boolean isFirstResource) {
+            hideExpandedTitle();
+            return false;
+        }
+    };
+
+    private static class Values {
+        String illustration;
+        String author;
+        String name;
+        Integer year;
+        Integer pages;
+        String excerpt;
     }
 }

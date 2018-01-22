@@ -6,11 +6,9 @@
     <string name="delete">удалить</string>
     <string name="book_was_deleted">Книга успешно удалена</string>
 
-    <string name="action_edit">Редактировать</string>
-    <string name="action_done">Завершить</string>
+    <string name="action_done">Готово</string>
 
     <string name="title_adding">Новая книга</string>
-    <string name="title_editing">Редактирование</string>
     <string name="dialog_choose_illustration_title">Выбор иллюстрации</string>
     <string name="dialog_choose_illustration_message">Укажите url адрес изображения</string>
     <string name="author_label">Автор</string>
