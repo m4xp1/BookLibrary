@@ -78,7 +78,7 @@ public class BookEditActivity extends Activity {
         book = (Book) getIntent().getSerializableExtra(EXTRA_BOOK);
         if (book != null) {
             setTitle(book.getAuthor());
-            setInitValues();
+            setBookValues();
         }
     }
 
@@ -111,7 +111,7 @@ public class BookEditActivity extends Activity {
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void setInitValues() {
+    private void setBookValues() {
         if (book.getIllustration() != null) {
             loadImage(book.getIllustration());
         }
