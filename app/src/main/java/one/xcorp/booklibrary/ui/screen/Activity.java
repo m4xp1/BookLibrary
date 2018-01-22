@@ -8,6 +8,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 
@@ -24,6 +25,7 @@ public abstract class Activity extends AppCompatActivity {
     private boolean isShowTitle;
     private CharSequence title;
 
+    private Toast toast;
     private AppBarLayout.OnOffsetChangedListener onOffsetChangedListener;
 
     @Override
@@ -129,5 +131,14 @@ public abstract class Activity extends AppCompatActivity {
                         isShowTitle = false;
                     }
                 });
+    }
+
+    public void showToast(int resId) {
+        if (toast != null) {
+            toast.cancel();
+        }
+
+        toast = Toast.makeText(this, resId, Toast.LENGTH_LONG);
+        toast.show();
     }
 }
