@@ -13,14 +13,11 @@
         android:paddingEnd="@dimen/padding"
         android:paddingStart="@dimen/padding">
 
-        <TextView
-            style="@style/PrimaryText.Inverse"
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_delete"
-            android:drawablePadding="@dimen/padding_drawable"
-            android:text="@string/delete"
-            android:textAllCaps="true"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_delete"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
